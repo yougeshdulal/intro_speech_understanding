@@ -13,7 +13,31 @@ def waveform_to_frames(waveform, frame_length, step):
     frames (np.ndarray((num_frames, frame_length))) - waveform chopped into frames
        frames[m/step,n] = waveform[m+n] only for m = integer multiple of step
     '''
-    raise RuntimeError("You need to change this part")
+
+    waveform = np.asarray(waveform)
+    N = len(waveform)
+
+
+    if frame_length <= 0 or step <= 0:
+        raise ValueError("frame_length and step must be positive integers")
+
+  
+    if N < frame_length:
+        return np.zeros((0, frame_length), dtype=waveform.dtype)
+
+ 
+    num_frames = 1 + (N - frame_length) // step
+
+
+    frames = np.zeros((num_frames, frame_length), dtype=waveform.dtype)
+
+   
+    for i in range(num_frames):
+        start = i * step              
+        end = start + frame_length      
+        frames[i, :] = waveform[start:end]
+
+    return frames
 
 def frames_to_mstft(frames):
     '''
@@ -25,7 +49,13 @@ def frames_to_mstft(frames):
     @returns:
     mstft (np.ndarray((num_frames, frame_length))) - the magnitude short-time Fourier transform
     '''
-    raise RuntimeError("You need to change this part")
+   
+    frames = np.asarray(frames)
+
+    
+    mstft = np.abs(np.fft.fft(frames, axis=1))
+
+    return mstft
 
 def mstft_to_spectrogram(mstft):
     '''
@@ -40,6 +70,23 @@ def mstft_to_spectrogram(mstft):
     The spectrogram should be expressed in decibels (20*log10(mstft)).
     np.amin(spectrogram) should be no smaller than np.amax(spectrogram)-60
     '''
-    raise RuntimeError("You need to change this part")
+   
+    mstft = np.asarray(mstft)
 
+    if mstft.size == 0:
+        return mstft.astype(float)
 
+ 
+    floor = 0.001 * np.amax(mstft)
+
+  
+    mstft_clipped = np.maximum(floor, mstft)
+
+    
+    spectrogram = 20 * np.log10(mstft_clipped)
+
+    
+    max_db = np.amax(spectrogram)
+    spectrogram = np.maximum(spectrogram, max_db - 60.0)
+
+    return spectrogram
