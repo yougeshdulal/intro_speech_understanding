@@ -2,16 +2,34 @@ import speech_recognition as sr
 
 def transcribe_wavefile(filename, language):
     '''
-    Use sr.Recognizer.AudioFile(filename) as the source,
-    recognize from that source,
+    Use sr.AudioFile(filename) as the audio source,
+    recognize speech from that source,
     and return the recognized text.
-    
+
     @params:
-    filename (str) - the filename from which to read the audio
-    language (str) - the language of the audio
-    
+    filename (str) - path to the WAV audio file
+    language (str) - language code (e.g., "en-US", "ja-JP")
+
     @returns:
-    text (str) - the recognized speech
+    text (str) - the recognized speech as text
     '''
-    raise RuntimeError("FAIL!!  You need to change this function so it works!")
-        
+    
+    # Create a recognizer object
+    recognizer = sr.Recognizer()
+
+    try:
+        # Load the audio file
+        with sr.AudioFile(filename) as source:
+            audio = recognizer.record(source)
+
+        # Perform speech recognition using Google API
+        text = recognizer.recognize_google(audio, language=language)
+        return text
+
+    except sr.UnknownValueError:
+        # Speech was not clear
+        return "Error: Speech could not be understood."
+
+    except sr.RequestError:
+        # API or internet issue
+        return "Error: Could not connect to the speech recognition service."
