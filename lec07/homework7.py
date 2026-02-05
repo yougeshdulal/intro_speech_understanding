@@ -33,6 +33,7 @@ def spectral_analysis(x, Fs):
     '''
     Find the three loudest frequencies in x (in Hz), sorted f1 < f2 < f3.
     '''
+<<<<<<< HEAD
     x = np.asarray(x)
     N = len(x)
 
@@ -50,3 +51,6 @@ def spectral_analysis(x, Fs):
 
     freqs_sorted = np.sort(freqs)
     return float(freqs_sorted[0]), float(freqs_sorted[1]), float(freqs_sorted[2])
+=======
+    raise RuntimeError("You need to write this part")
+>>>>>>> 778ea79f2d4b46b64dd323950ad92fda1870da4b
